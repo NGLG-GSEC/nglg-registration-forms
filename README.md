@@ -29,6 +29,10 @@ The form can also be reached through the official website under **External Relat
 
 The Greek form filters lodges by Province/Region, uses the approved 36-item Grand Officer list, blocks duplicate mobile registrations, supports one-time personal messages, confirms the email address before submission, sends a confirmation email, and updates event statistics.
 
+### Standalone version (no Google sign-in)
+
+`apps/greek-dinner-web/` is a copy of the same form that runs as an ordinary website with its own database, a password-protected admin panel (`/admin`) and the same confirmation email. It avoids the Apps Script problem on phones that are signed in to several Google accounts. See [its README](apps/greek-dinner-web/README.md) for deployment.
+
 ## Repository contents
 
 - `forms/foreign-delegations-corfu-2026/` — production English registration form, backend, link registry, and deployment notes.
@@ -36,6 +40,7 @@ The Greek form filters lodges by Province/Region, uses the approved 36-item Gran
 - `forms/greek-grand-communication/Index.html` — responsive Greek dinner-registration form.
 - `forms/greek-grand-communication/assets/` — form background, emblem, and Grand Master portrait.
 - `forms/greek-grand-communication/README.md` — Greek-form spreadsheet structure and deployment instructions.
+- `apps/greek-dinner-web/` — standalone Node.js version of the Greek form with its own database and admin panel.
 
 ## Privacy and security
 

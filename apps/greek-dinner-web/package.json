@@ -1,0 +1,19 @@
+{
+  "name": "nglg-greek-dinner-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone Greek dinner-registration web app for the National Grand Lodge of Greece (replica of the Apps Script form, with its own database and admin panel).",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --no-warnings=ExperimentalWarning server.js",
+    "test": "node --no-warnings=ExperimentalWarning --test test/*.test.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemailer": "^6.9.16"
+  }
+}

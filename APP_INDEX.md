@@ -57,6 +57,22 @@ This repository contains two independent Google Apps Script web applications for
 - [README.md](forms/greek-grand-communication/README.md) — spreadsheet structure and deployment instructions.
 - [assets](forms/greek-grand-communication/assets/) — background, emblem and Grand Master portrait.
 
+## 3. Greek Dinner Registration — standalone web app
+
+### What it does
+
+- Shows the same Greek form, with the same graphics and behaviour, as an ordinary website. No Google account is needed, which fixes the problem on phones signed in to several Google accounts.
+- Stores registrations, Lodges and one-time personal messages in its own SQLite database.
+- Sends every registrant the same confirmation email as the Apps Script version, through SMTP.
+- Provides a password-protected admin panel at `/admin` to view, search, add, edit, delete and export registrations, re-send emails, see statistics, and manage Lodges and personal messages.
+
+### Main files
+
+- [README.md](apps/greek-dinner-web/README.md) — set-up, email and deployment instructions.
+- [public/index.html](apps/greek-dinner-web/public/index.html) — public form.
+- [public/admin.html](apps/greek-dinner-web/public/admin.html) — admin panel.
+- [src/](apps/greek-dinner-web/src/) — server, database and email code.
+
 ## Separation of the two applications
 
 The applications share this GitHub repository only for version control. They must remain separate in operation:
