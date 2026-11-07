@@ -49,7 +49,27 @@ Requires Node.js 22.13 or newer. The database uses Node's built-in SQLite module
 
 The app is a single Node.js process that stores one database file. Any host that offers **persistent storage** will work. Without persistent storage the database is erased on every restart.
 
-### Option A: Docker on a VPS (Hetzner, DigitalOcean, etc.)
+### Render (chosen host)
+
+The repository root contains [`render.yaml`](../../render.yaml), a Render Blueprint that sets up everything: the Frankfurt region, a Node.js web service, a 1 GB persistent disk for the database, a health check, and an automatically generated `SESSION_SECRET`.
+
+1. The code must be on GitHub, on the branch Render deploys (normally `main`).
+2. In Render, choose **New → Blueprint**, connect GitHub, and select `NGLG-GSEC/nglg-registration-forms`.
+3. Render asks for the secret values. Fill them in:
+   - `ADMIN_PASSWORD`: the password for `/admin`
+   - `SMTP_USER` and `MAIL_FROM`: the `@nglgreece.gr` address that sends the emails
+   - `SMTP_PASS`: that account's Google App password (see Email set-up below)
+   - `ORGANIZER_EMAIL` and `MAIL_BCC`: optional, can be left empty
+4. Click **Apply**. After the deploy, the form is at `https://nglg-greek-dinner.onrender.com` and the admin panel at `/admin`. Render shows the exact address.
+5. Optional: to use your own address, open the service → **Settings → Custom Domains**, add for example `register.nglgreece.org`, and create the CNAME record Render shows at your DNS provider. Render issues HTTPS automatically.
+
+**Cost:** the persistent disk requires a paid instance. The Starter plan is about $7 a month, plus about $0.25 a month for the 1 GB disk. Render's free plan has no disk, and its data would be erased on every restart, so don't use it for this app.
+
+**Backups:** Render takes daily snapshots of the disk. You can also download a CSV at any time from the admin panel.
+
+Every push to the deployed branch redeploys automatically. The database on the disk is kept.
+
+### Alternative: Docker on a VPS (Hetzner, DigitalOcean, etc.)
 
 ```bash
 docker build -t nglg-dinner .
@@ -58,12 +78,6 @@ docker run -d --name nglg-dinner --restart unless-stopped -p 3000:3000 \
 ```
 
 Put the app behind HTTPS (for example Caddy or nginx), and point a subdomain such as `register.nglgreece.org` at it.
-
-### Option B: Render / Railway / Fly.io
-
-1. Create a new web service from this repository with root directory `apps/greek-dinner-web`. It will use the Dockerfile.
-2. Attach a persistent disk or volume mounted at `/data`.
-3. Set the environment variables from `.env.example` in the service settings.
 
 ### Email set-up (Google Workspace)
 
