@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Διαχείριση Εγγραφών — ΕΜΣΤΕ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --blue:#061a35; --blue2:#123f78; --gold:#d0aa4f; --gold-light:#f0dda0; --paper:#fffef9; --line:#e3d6b2; --muted:#5d6878; --red:#9b1c1c; --green:#176b35; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font:14px Montserrat,sans-serif; color:var(--blue); background:#eef0f3; }
+    header.top { display:flex; align-items:center; gap:14px; padding:12px 20px; color:#fff;
+      background:linear-gradient(135deg,#071e43,#164f91 55%,#082653); border-bottom:3px solid var(--gold); }
+    header.top img { width:44px; height:44px; border:1.5px solid var(--gold); border-radius:50%; object-fit:cover; }
+    header.top h1 { flex:1; margin:0; font:700 17px "Playfair Display",serif; }
+    header.top small { display:block; color:var(--gold-light); font:600 11px Montserrat,sans-serif; letter-spacing:.5px; }
+    main { max-width:1280px; margin:0 auto; padding:18px 16px 40px; }
+    button, .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:9px 14px; border:1px solid var(--blue2);
+      border-radius:8px; background:var(--blue2); color:#fff; font:600 13px Montserrat,sans-serif; cursor:pointer; text-decoration:none; white-space:nowrap; }
+    button.ghost, .btn.ghost { background:#fff; color:var(--blue2); }
+    button.danger { background:#fff; color:var(--red); border-color:#d9a3a3; }
+    button.small { padding:5px 9px; font-size:12px; }
+    button:disabled { opacity:.6; cursor:wait; }
+    header.top button { background:transparent; border-color:var(--gold-light); color:var(--gold-light); }
+    input, select, textarea { width:100%; padding:9px 10px; border:1px solid #c9ccd2; border-radius:8px; background:#fff; color:var(--blue); font:14px Montserrat,sans-serif; }
+    input:focus, select:focus, textarea:focus { outline:2px solid #c9a22755; border-color:var(--gold); }
+    .card { background:#fff; border:1px solid #dde1e6; border-radius:12px; box-shadow:0 1px 3px #0000000d; }
+    .login { max-width:380px; margin:12vh auto; padding:30px; text-align:center; }
+    .login img { width:96px; height:96px; border:2px solid var(--gold); border-radius:50%; object-fit:cover; }
+    .login h2 { font:700 20px "Playfair Display",serif; }
+    .login form { display:grid; gap:12px; margin-top:16px; }
+    .tabs { display:flex; gap:4px; margin-bottom:16px; border-bottom:2px solid var(--line); overflow-x:auto; }
+    .tabs button { border:none; border-bottom:3px solid transparent; border-radius:0; background:none; color:var(--muted); padding:10px 14px; margin-bottom:-2px; }
+    .tabs button[aria-selected="true"] { color:var(--blue); border-bottom-color:var(--gold); }
+    .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px; }
+    .toolbar select, .toolbar input { width:auto; min-width:0; }
+    .toolbar input[type=search] { flex:1 1 220px; }
+    .toolbar .spacer { flex:1; }
+    .summary { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
+    .pill { padding:6px 12px; border-radius:999px; background:#f5ecd5; color:#6b5313; font-weight:700; font-size:12px; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:9px 10px; border-bottom:1px solid #eceef1; text-align:left; vertical-align:top; }
+    th { position:sticky; top:0; background:#f7f4ea; font-size:12px; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap; }
+    td.num { text-align:right; font-variant-numeric:tabular-nums; }
+    tbody tr:hover { background:#fbf9f3; }
+    .muted { color:var(--muted); font-size:12px; }
+    .status { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; white-space:nowrap; }
+    .status.sent { background:#e7f6ec; color:var(--green); }
+    .status.failed { background:#fdeaea; color:var(--red); }
+    .status.other { background:#eef0f3; color:var(--muted); }
+    .actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .empty { padding:40px; text-align:center; color:var(--muted); }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
+    .stats .card { padding:18px; }
+    .stats h3 { margin:0 0 12px; font:700 16px "Playfair Display",serif; }
+    .tiles { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+    .tile { padding:12px; border:1px solid var(--line); border-radius:10px; background:#fdfbf5; }
+    .tile b { display:block; font-size:24px; font-variant-numeric:tabular-nums; }
+    .tile span { color:var(--muted); font-size:12px; }
+    .bar-row { display:grid; grid-template-columns:minmax(0,1.6fr) 2fr 34px; gap:8px; align-items:center; margin:6px 0; font-size:12px; }
+    .bar { height:10px; border-radius:5px; background:#eef0f3; overflow:hidden; }
+    .bar i { display:block; height:100%; background:var(--blue2); border-radius:5px; }
+    dialog { width:min(640px,calc(100% - 24px)); padding:0; border:2px solid var(--gold); border-radius:14px; background:var(--paper); color:var(--blue); }
+    dialog::backdrop { background:#001226aa; }
+    dialog form { padding:22px; }
+    dialog h3 { margin:0 0 14px; font:700 19px "Playfair Display",serif; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .grid label { display:grid; gap:5px; font-size:12px; font-weight:700; }
+    .grid .wide { grid-column:1/-1; }
+    .dialog-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+    .notice { margin:0 0 12px; padding:10px 12px; border-radius:8px; font-weight:600; }
+    .notice.error { background:#fdeaea; color:var(--red); }
+    .notice.ok { background:#e7f6ec; color:var(--green); }
+    .notice.warn { background:#fff3cd; color:#6a5000; }
+    #toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); z-index:50; max-width:calc(100% - 32px); }
+    [hidden] { display:none!important; }
+    @media (max-width:700px) {
+      header.top { padding:10px 14px; } header.top h1 { font-size:14px; }
+      .grid { grid-template-columns:1fr; }
+      .tiles { grid-template-columns:repeat(3,1fr); } .tile b { font-size:19px; }
+      .hide-sm { display:none; }
+      .toolbar > * { flex:1 1 auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <img src="/assets/emblem.jpg" alt="">
+    <h1>Διαχείριση Εγγραφών Δείπνου<small>ΕΘΝΙΚΗ ΜΕΓΑΛΗ ΣΤΟΑ ΤΗΣ ΕΛΛΑΔΟΣ</small></h1>
+    <button id="logout" hidden>Αποσύνδεση</button>
+  </header>
+
+  <section id="login-view" class="card login" hidden>
+    <img src="/assets/emblem.jpg" alt="Έμβλημα ΕΜΣΤΕ">
+    <h2>Είσοδος διαχειριστή</h2>
+    <form id="login-form">
+      <input id="password" type="password" autocomplete="current-password" placeholder="Κωδικός διαχειριστή" required>
+      <button type="submit">Είσοδος</button>
+      <p id="login-error" class="notice error" hidden></p>
+    </form>
+  </section>
+
+  <main id="app-view" hidden>
+    <p id="mail-warning" class="notice warn" hidden>Η αποστολή email δεν έχει ρυθμιστεί στον διακομιστή (SMTP). Οι εγγραφές αποθηκεύονται, αλλά δεν αποστέλλονται επιβεβαιώσεις.</p>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="registrations" aria-selected="true">Εγγραφές</button>
+      <button role="tab" data-tab="statistics" aria-selected="false">Στατιστικά</button>
+      <button role="tab" data-tab="lodges" aria-selected="false">Στοές</button>
+      <button role="tab" data-tab="messages" aria-selected="false">Προσωπικά μηνύματα</button>
+    </nav>
+
+    <section data-panel="registrations">
+      <div class="toolbar">
+        <select id="event-filter" aria-label="Μεγάλη Συνέλευση"></select>
+        <input id="search" type="search" placeholder="Αναζήτηση ονόματος, Στοάς, κινητού, email…">
+        <span class="spacer"></span>
+        <button id="add-registration" class="ghost">+ Νέα εγγραφή</button>
+        <a id="export" class="btn ghost" href="/api/admin/export.csv">Λήψη CSV</a>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="card table-wrap">
+        <table>
+          <thead><tr>
+            <th>#</th><th>Ημ/νία</th><th>Ονοματεπώνυμο</th><th class="hide-sm">Αξίωμα</th><th>Στοά</th>
+            <th class="num">Συνοδοί</th><th>Κινητό</th><th class="hide-sm">Email</th><th>Email επιβ.</th><th></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div id="rows-empty" class="empty" hidden>Δεν υπάρχουν εγγραφές.</div>
+      </div>
+    </section>
+
+    <section data-panel="statistics" hidden>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <section data-panel="lodges" hidden>
+      <div class="toolbar">
+        <select id="lodge-province-filter" aria-label="Επαρχία"></select>
+        <span class="spacer"></span>
+        <button id="add-lodge" class="ghost">+ Νέα Στοά</button>
+      </div>
+      <div class="card table-wrap">
+        <table>
+          <thead><tr><th>Στοά</th><th class="num">Αριθμός</th><th>Επαρχία</th><th></th></tr></thead>
+          <tbody id="lodge-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section data-panel="messages" hidden>
+      <p class="muted">Προσωπικό μήνυμα που εμφανίζεται <b>μία φορά</b> όταν ο Αδελφός πληκτρολογήσει το κινητό του στη φόρμα (αντικαθιστά το φύλλο «cover»).</p>
+      <div class="toolbar"><span class="spacer"></span><button id="add-message" class="ghost">+ Νέο μήνυμα</button></div>
+      <div class="card table-wrap">
+        <table>
+          <thead><tr><th>Κινητό</th><th>Μήνυμα</th><th>Εμφανίστηκε</th><th></th></tr></thead>
+          <tbody id="message-rows"></tbody>
+        </table>
+        <div id="messages-empty" class="empty" hidden>Δεν υπάρχουν προσωπικά μηνύματα.</div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="registration-dialog">
+    <form method="dialog" id="registration-form">
+      <h3 id="registration-title">Επεξεργασία εγγραφής</h3>
+      <p id="registration-error" class="notice error" hidden></p>
+      <div class="grid">
+        <label class="wide">Μεγάλη Συνέλευση<select name="event" required></select></label>
+        <label>Όνομα<input name="name" required></label>
+        <label>Επώνυμο<input name="surname" required></label>
+        <label>Προσφώνηση<select name="salutation" required></select></label>
+        <label>Κατάσταση<select name="statusType" required></select></label>
+        <label class="wide">Βαθμός / Αξίωμα<input name="office" list="office-options" required></label>
+        <label>Επαρχία<select name="province" required></select></label>
+        <label>Στοά<input name="lodge" list="lodge-options" required></label>
+        <label>Συνοδοί<input name="partner" type="number" min="0" max="50" required></label>
+        <label>Κινητό<input name="mobile" inputmode="tel" required></label>
+        <label class="wide">Email<input name="email" type="email" required></label>
+        <label class="wide">Σημειώσεις διαχειριστή<textarea name="notes" rows="2"></textarea></label>
+      </div>
+      <datalist id="office-options"></datalist>
+      <datalist id="lodge-options"></datalist>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close>Ακύρωση</button>
+        <button type="submit">Αποθήκευση</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="lodge-dialog">
+    <form method="dialog" id="lodge-form">
+      <h3>Στοά</h3>
+      <p id="lodge-error" class="notice error" hidden></p>
+      <div class="grid">
+        <label class="wide">Όνομα Στοάς<input name="lodge" required></label>
+        <label>Αριθμός<input name="number"></label>
+        <label>Επαρχία<select name="province" required></select></label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close>Ακύρωση</button>
+        <button type="submit">Αποθήκευση</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="message-dialog">
+    <form method="dialog" id="message-form">
+      <h3>Προσωπικό μήνυμα</h3>
+      <p id="message-error" class="notice error" hidden></p>
+      <div class="grid">
+        <label class="wide">Κινητό<input name="mobile" inputmode="tel" placeholder="69XXXXXXXX" required></label>
+        <label class="wide">Μήνυμα<textarea name="message" rows="4" required></textarea></label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="ghost" data-close>Ακύρωση</button>
+        <button type="submit">Αποθήκευση</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast"></div>
+
+  <script>
+    const EVENTS = { dec2026:'Μεγάλη Συνέλευση 19ης Δεκεμβρίου 2026', may2027:'Μεγάλη Συνέλευση 15ης Μαΐου 2027' };
+    const PROVINCES = ['ΑΘΗΝΩΝ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ','ΙΟΝΙΩΝ ΝΗΣΩΝ','ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ','ΚΥΠΡΟΥ'];
+    const SALUTATIONS = ['Σεβασμιότατε','Πανσεβάσμιε','Λίαν Σεβάσμιε','Σεβάσμιε','Αδελφέ'];
+    const STATUS_TYPES = ['ΕΝ ΕΝΕΡΓΕΙΑ','ΠΡΩΗΝ','ΟΥΔΕΝ'];
+    const OFFICES = [
+      "Μέγας Διδάσκαλος","Αναπληρωτής Μέγας Διδάσκαλος","Βοηθός Μέγας Διδάσκαλος","Πρώτος Μέγας Επόπτης","Δεύτερος Μέγας Επόπτης",
+      "Μέγας Ευχέτης","Πρόεδρος ΣΓΥ","Μέγας Νομοφύλαξ","Μέγας Γραμματεύς","Μέγας Καγκελάριος","Μέγας Θησαυροφύλαξ","Μέγας Γραμμ. Εκπ/σεως",
+      "Πρόεδρος Μεγάλου Αγαθοεργού Σώματος","Μέγας Τελετάρχης","Μέγας Ξιφοφόρος","Μέγας Επίτροπος Έργων","Αναπληρωτής Μέγας Γραμματεύς",
+      "Αναπληρωτής Μέγας Καγκελάριος","Αναπληρωτής Μέγας Τελετάρχης","Μέγας Έφορος Μουσείου & Βιβλιοθήκης","Πρώτος Μέγας Διάκονος",
+      "Δεύτερος Μέγας Διάκονος","Βοηθός Μέγας Γραμματεύς","Βοηθός Μέγας Καγκελάριος","Μέγας Έφορος επί των Διασήμων","Μέγας Οργανιστής",
+      "Μέγας Σημαιοφόρος","Μέγας Προσαγωγεύς","Μέγας Στεγαστής","Μέγας Επιμελητής","Επ.ΜΔ. Αθηνών","Επ.ΜΔ Πειραιώς","Επ.ΜΔ Ιονίων Νήσων",
+      "Περ.ΜΔ Κύπρου","Επ.ΜΔ Κεντρικής και Βορείου Ελλάδος","Επ.ΜΔ Πελοποννήσου και Δυτικής Ελλάδος",
+      "ΠΡΩΗΝ ΜΕΓΑΣ ΔΙΔΑΣΚΑΛΟΣ","ΠΡΩΗΝ ΑΝΑΠΛΗΡΩΤΗΣ ΜΕΓΑΣ ΔΙΔΑΣΚΑΛΟΣ","ΠΡΩΗΝ ΒΟΗΘΟΣ ΜΕΓΑΣ ΔΙΔΑΣΚΑΛΟΣ","ΠΡΩΗΝ ΜΕΓ. ΑΞ .","ΠΡΩΗΝ ΣΕΒΑΣΜΙΟΣ","ΑΛΛΟ","ΟΥΔΕΝ"
+    ];
+
+    const byId = id => document.getElementById(id);
+    const state = { registrations: [], lodges: [], messages: [], editingId: null, editingLodge: null };
+
+    function esc(value) { const div = document.createElement('div'); div.textContent = String(value ?? ''); return div.innerHTML; }
+    function options(select, values, labels) {
+      select.innerHTML = values.map((v, i) => '<option value="' + esc(v) + '">' + esc(labels ? labels[i] : v) + '</option>').join('');
+    }
+    function formatDate(iso) {
+      return new Date(iso).toLocaleString('el-GR', { timeZone:'Europe/Athens', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+    function toast(text, type = 'ok') {
+      const box = byId('toast');
+      box.innerHTML = '<p class="notice ' + type + '">' + esc(text) + '</p>';
+      clearTimeout(toast.timer); toast.timer = setTimeout(() => { box.innerHTML = ''; }, 4000);
+    }
+    async function api(path, method = 'GET', body) {
+      const response = await fetch(path, {
+        method, headers: body ? { 'Content-Type':'application/json' } : {}, body: body ? JSON.stringify(body) : undefined
+      });
+      const data = await response.json().catch(() => ({}));
+      if (response.status === 401 && path !== '/api/admin/login') { showLogin(); throw new Error(data.error || 'Απαιτείται σύνδεση.'); }
+      if (!response.ok) throw new Error(data.error || ('HTTP ' + response.status));
+      return data;
+    }
+
+    // ----- auth -----
+    function showLogin() { byId('login-view').hidden = false; byId('app-view').hidden = true; byId('logout').hidden = true; byId('password').focus(); }
+    async function showApp(session) {
+      byId('login-view').hidden = true; byId('app-view').hidden = false; byId('logout').hidden = false;
+      byId('mail-warning').hidden = Boolean(session && session.emailConfigured);
+      await Promise.all([loadRegistrations(), loadLodges()]);
+    }
+    byId('login-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      byId('login-error').hidden = true;
+      try {
+        await api('/api/admin/login', 'POST', { password: byId('password').value });
+        byId('password').value = '';
+        showApp(await api('/api/admin/session'));
+      } catch (error) { byId('login-error').textContent = error.message; byId('login-error').hidden = false; }
+    });
+    byId('logout').addEventListener('click', async () => { await api('/api/admin/logout', 'POST'); showLogin(); });
+
+    // ----- tabs -----
+    document.querySelectorAll('[data-tab]').forEach(tab => tab.addEventListener('click', () => {
+      document.querySelectorAll('[data-tab]').forEach(t => t.setAttribute('aria-selected', String(t === tab)));
+      document.querySelectorAll('[data-panel]').forEach(p => { p.hidden = p.dataset.panel !== tab.dataset.tab; });
+      if (tab.dataset.tab === 'statistics') loadStatistics();
+      if (tab.dataset.tab === 'messages') loadMessages();
+    }));
+    document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
+
+    // ----- registrations -----
+    options(byId('event-filter'), Object.keys(EVENTS), Object.values(EVENTS));
+    byId('event-filter').addEventListener('change', loadRegistrations);
+    byId('search').addEventListener('input', renderRegistrations);
+
+    async function loadRegistrations() {
+      const event = byId('event-filter').value;
+      byId('export').href = '/api/admin/export.csv?event=' + encodeURIComponent(event);
+      state.registrations = await api('/api/admin/registrations?event=' + encodeURIComponent(event));
+      renderRegistrations();
+    }
+    function emailStatus(row) {
+      if (row.email_status === 'sent') return '<span class="status sent">Στάλθηκε</span>';
+      if (row.email_status === 'failed') return '<span class="status failed" title="' + esc(row.email_error) + '">Απέτυχε</span>';
+      return '<span class="status other">' + esc(row.email_status) + '</span>';
+    }
+    function renderRegistrations() {
+      const term = byId('search').value.trim().toLocaleLowerCase('el');
+      const rows = state.registrations.filter(r => !term ||
+        [r.name, r.surname, r.lodge, r.mobile, r.email, r.office, r.province].join(' ').toLocaleLowerCase('el').includes(term));
+      const guests = state.registrations.reduce((s, r) => s + (Number(r.partner) || 0), 0);
+      byId('summary').innerHTML =
+        '<span class="pill">Αδελφοί: ' + state.registrations.length + '</span>' +
+        '<span class="pill">Συνοδοί: ' + guests + '</span>' +
+        '<span class="pill">Σύνολο: ' + (state.registrations.length + guests) + '</span>' +
+        (term ? '<span class="pill">Αποτελέσματα: ' + rows.length + '</span>' : '');
+      byId('rows-empty').hidden = rows.length > 0;
+      byId('rows').innerHTML = rows.map((r, index) => '<tr>' +
+        '<td class="muted">' + (index + 1) + '</td>' +
+        '<td class="muted">' + esc(formatDate(r.registered_at)) + '</td>' +
+        '<td><b>' + esc(r.surname + ' ' + r.name) + '</b><div class="muted">' + esc(r.salutation) + '</div>' +
+          (r.notes ? '<div class="muted">📝 ' + esc(r.notes) + '</div>' : '') + '</td>' +
+        '<td class="hide-sm">' + esc(r.status_type + ' - ' + r.office) + '</td>' +
+        '<td>' + esc(r.lodge) + '<div class="muted">' + esc(r.province) + '</div></td>' +
+        '<td class="num">' + esc(r.partner) + '</td>' +
+        '<td><a href="tel:' + esc(r.mobile) + '">' + esc(r.mobile) + '</a></td>' +
+        '<td class="hide-sm"><a href="mailto:' + esc(r.email) + '">' + esc(r.email) + '</a></td>' +
+        '<td>' + emailStatus(r) + '</td>' +
+        '<td><div class="actions">' +
+          '<button class="small ghost" data-edit="' + r.id + '">Επεξεργασία</button>' +
+          '<button class="small ghost" data-resend="' + r.id + '">Αποστολή email</button>' +
+          '<button class="small danger" data-delete="' + r.id + '">Διαγραφή</button>' +
+        '</div></td></tr>').join('');
+    }
+    byId('rows').addEventListener('click', async event => {
+      const button = event.target.closest('button'); if (!button) return;
+      const id = Number(button.dataset.edit || button.dataset.resend || button.dataset.delete);
+      const row = state.registrations.find(r => r.id === id);
+      if (button.dataset.edit) openRegistration(row);
+      if (button.dataset.resend) {
+        if (!confirm('Αποστολή του email επιβεβαίωσης στο ' + row.email + ';')) return;
+        button.disabled = true;
+        try {
+          const result = await api('/api/admin/registrations/' + id + '/send-email', 'POST');
+          toast(result.emailSent ? 'Το email στάλθηκε.' : 'Η αποστολή απέτυχε: ' + result.emailError, result.emailSent ? 'ok' : 'error');
+          await loadRegistrations();
+        } catch (error) { toast(error.message, 'error'); } finally { button.disabled = false; }
+      }
+      if (button.dataset.delete) {
+        if (!confirm('Οριστική διαγραφή της εγγραφής ' + row.surname + ' ' + row.name + ';')) return;
+        try { await api('/api/admin/registrations/' + id, 'DELETE'); toast('Η εγγραφή διαγράφηκε.'); await loadRegistrations(); }
+        catch (error) { toast(error.message, 'error'); }
+      }
+    });
+
+    const regForm = byId('registration-form');
+    options(regForm.event, Object.keys(EVENTS), Object.values(EVENTS));
+    options(regForm.salutation, SALUTATIONS);
+    options(regForm.statusType, STATUS_TYPES);
+    options(regForm.province, PROVINCES);
+    byId('office-options').innerHTML = OFFICES.map(o => '<option value="' + esc(o) + '">').join('');
+
+    function openRegistration(row) {
+      state.editingId = row ? row.id : null;
+      byId('registration-title').textContent = row ? 'Επεξεργασία εγγραφής' : 'Νέα εγγραφή';
+      byId('registration-error').hidden = true;
+      const values = row ? {
+        event: row.event, name: row.name, surname: row.surname, salutation: row.salutation, statusType: row.status_type,
+        office: row.office, province: row.province, lodge: row.lodge, partner: row.partner, mobile: row.mobile, email: row.email, notes: row.notes
+      } : { event: byId('event-filter').value, partner: 0, salutation: 'Αδελφέ', statusType: 'ΟΥΔΕΝ', office: 'ΟΥΔΕΝ', province: PROVINCES[0] };
+      regForm.reset();
+      Object.entries(values).forEach(([key, value]) => { if (regForm[key]) regForm[key].value = value ?? ''; });
+      byId('registration-dialog').showModal();
+    }
+    byId('add-registration').addEventListener('click', () => openRegistration(null));
+    regForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const body = Object.fromEntries(new FormData(regForm).entries());
+      try {
+        if (state.editingId) await api('/api/admin/registrations/' + state.editingId, 'PUT', body);
+        else await api('/api/admin/registrations', 'POST', body);
+        byId('registration-dialog').close();
+        toast('Η εγγραφή αποθηκεύτηκε.');
+        if (body.event !== byId('event-filter').value) byId('event-filter').value = body.event;
+        await loadRegistrations();
+      } catch (error) { byId('registration-error').textContent = error.message; byId('registration-error').hidden = false; }
+    });
+
+    // ----- statistics -----
+    async function loadStatistics() {
+      const stats = await api('/api/admin/statistics');
+      byId('stats').innerHTML = stats.map(s => {
+        const max = Math.max(1, ...Object.values(s.provinces));
+        return '<div class="card"><h3>' + esc(s.title) + '</h3>' +
+          '<div class="tiles"><div class="tile"><b>' + s.total + '</b><span>Συνολικές συμμετοχές</span></div>' +
+          '<div class="tile"><b>' + s.brothers + '</b><span>Αδελφοί</span></div>' +
+          '<div class="tile"><b>' + s.guests + '</b><span>Συνοδοί</span></div></div>' +
+          '<div class="muted" style="margin-bottom:6px">ανά Επαρχία (Αδελφοί)</div>' +
+          Object.entries(s.provinces).map(([p, n]) => '<div class="bar-row"><span>' + esc(p) + '</span>' +
+            '<span class="bar"><i style="width:' + (n / max * 100) + '%"></i></span><b class="num">' + n + '</b></div>').join('') +
+          '<p style="margin:14px 0 0"><span class="muted">Η πιο δυναμική Στοά:</span> <b>' +
+            (s.strongestLodge ? esc(s.strongestLodge.lodge) + ' (' + s.strongestLodge.count + ')' : '—') + '</b></p></div>';
+      }).join('');
+    }
+
+    // ----- lodges -----
+    options(byId('lodge-province-filter'), [''].concat(PROVINCES), ['Όλες οι Επαρχίες'].concat(PROVINCES));
+    byId('lodge-province-filter').addEventListener('change', renderLodges);
+    const lodgeForm = byId('lodge-form');
+    options(lodgeForm.province, PROVINCES);
+    async function loadLodges() {
+      state.lodges = await api('/api/admin/lodges');
+      byId('lodge-options').innerHTML = state.lodges.map(l => {
+        const display = l.lodge === 'ΦΟΙΝΙΞ ΚΕΡΚΥΡΑΣ' ? 'ΦΟΙΝΙΞ ΚΕΡΚΥΡΑΣ έτος Ιδρ. 1818' : l.lodge + (l.number ? ' υπ’ αριθμ. ' + l.number : '');
+        return '<option value="' + esc(display) + '">';
+      }).join('');
+      renderLodges();
+    }
+    function renderLodges() {
+      const province = byId('lodge-province-filter').value;
+      byId('lodge-rows').innerHTML = state.lodges.filter(l => !province || l.province === province).map(l => '<tr>' +
+        '<td>' + esc(l.lodge) + '</td><td class="num">' + esc(l.number) + '</td><td>' + esc(l.province) + '</td>' +
+        '<td><div class="actions"><button class="small ghost" data-edit-lodge="' + l.id + '">Επεξεργασία</button>' +
+        '<button class="small danger" data-delete-lodge="' + l.id + '">Διαγραφή</button></div></td></tr>').join('');
+    }
+    function openLodge(lodge) {
+      state.editingLodge = lodge ? lodge.id : null;
+      byId('lodge-error').hidden = true;
+      lodgeForm.reset();
+      if (lodge) { lodgeForm.lodge.value = lodge.lodge; lodgeForm.number.value = lodge.number; lodgeForm.province.value = lodge.province; }
+      byId('lodge-dialog').showModal();
+    }
+    byId('add-lodge').addEventListener('click', () => openLodge(null));
+    byId('lodge-rows').addEventListener('click', async event => {
+      const button = event.target.closest('button'); if (!button) return;
+      const lodge = state.lodges.find(l => l.id === Number(button.dataset.editLodge || button.dataset.deleteLodge));
+      if (button.dataset.editLodge) openLodge(lodge);
+      if (button.dataset.deleteLodge && confirm('Διαγραφή της Στοάς ' + lodge.lodge + ' από τη λίστα της φόρμας;')) {
+        try { await api('/api/admin/lodges/' + lodge.id, 'DELETE'); await loadLodges(); } catch (error) { toast(error.message, 'error'); }
+      }
+    });
+    lodgeForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      const body = Object.fromEntries(new FormData(lodgeForm).entries());
+      try {
+        if (state.editingLodge) await api('/api/admin/lodges/' + state.editingLodge, 'PUT', body);
+        else await api('/api/admin/lodges', 'POST', body);
+        byId('lodge-dialog').close(); toast('Η Στοά αποθηκεύτηκε.'); await loadLodges();
+      } catch (error) { byId('lodge-error').textContent = error.message; byId('lodge-error').hidden = false; }
+    });
+
+    // ----- personal messages -----
+    const messageForm = byId('message-form');
+    async function loadMessages() {
+      state.messages = await api('/api/admin/messages');
+      byId('messages-empty').hidden = state.messages.length > 0;
+      byId('message-rows').innerHTML = state.messages.map(m => '<tr>' +
+        '<td>' + esc(m.mobile) + '</td><td>' + esc(m.message) + '</td>' +
+        '<td class="muted">' + (m.shown_at ? esc(formatDate(m.shown_at)) : '—') + '</td>' +
+        '<td><div class="actions"><button class="small ghost" data-edit-msg="' + esc(m.mobile) + '">Επεξεργασία</button>' +
+        (m.shown_at ? '<button class="small ghost" data-reset-msg="' + esc(m.mobile) + '">Επαναφορά</button>' : '') +
+        '<button class="small danger" data-delete-msg="' + esc(m.mobile) + '">Διαγραφή</button></div></td></tr>').join('');
+    }
+    function openMessage(message) {
+      byId('message-error').hidden = true; messageForm.reset();
+      messageForm.mobile.readOnly = Boolean(message);
+      if (message) { messageForm.mobile.value = message.mobile; messageForm.message.value = message.message; }
+      byId('message-dialog').showModal();
+    }
+    byId('add-message').addEventListener('click', () => openMessage(null));
+    byId('message-rows').addEventListener('click', async event => {
+      const button = event.target.closest('button'); if (!button) return;
+      const mobile = button.dataset.editMsg || button.dataset.resetMsg || button.dataset.deleteMsg;
+      try {
+        if (button.dataset.editMsg) openMessage(state.messages.find(m => m.mobile === mobile));
+        if (button.dataset.resetMsg) { await api('/api/admin/messages/' + mobile + '/reset', 'POST'); toast('Το μήνυμα θα εμφανιστεί ξανά.'); await loadMessages(); }
+        if (button.dataset.deleteMsg && confirm('Διαγραφή του μηνύματος για το ' + mobile + ';')) { await api('/api/admin/messages/' + mobile, 'DELETE'); await loadMessages(); }
+      } catch (error) { toast(error.message, 'error'); }
+    });
+    messageForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      try {
+        await api('/api/admin/messages/' + encodeURIComponent(messageForm.mobile.value.replace(/\D/g, '')), 'PUT', { message: messageForm.message.value });
+        byId('message-dialog').close(); toast('Το μήνυμα αποθηκεύτηκε.'); await loadMessages();
+      } catch (error) { byId('message-error').textContent = error.message; byId('message-error').hidden = false; }
+    });
+
+    api('/api/admin/session').then(s => s.admin ? showApp(s) : showLogin()).catch(showLogin);
+  </script>
+</body>
+</html>
