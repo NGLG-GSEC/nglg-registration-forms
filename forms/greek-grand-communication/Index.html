@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <base target="_top">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Δήλωση Συμμετοχής στο Δείπνο — ΕΜΣΤΕ</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root { --blue:#061a35; --blue2:#123f78; --royal:#123f78; --gold:#d0aa4f; --gold-light:#f0dda0; --marble:#353a40; }
@@ -156,7 +157,7 @@
       <label for="mobile" data-icon="☎">Κινητό τηλέφωνο</label><input id="mobile" type="tel" name="mobile" inputmode="tel" placeholder="6951087654" required>
       <label for="email" data-icon="✉">Email δηλωμένο στη Στοά σας</label><input id="email" type="email" name="email" placeholder="name@example.com" required>
       <button type="submit" id="submitBtn">ΕΓΓΡΑΦΗ</button><div id="message" class="message" role="status"></div>
-      <p class="build-version">BUILD NGLG-7S-R6</p>
+      <p class="build-version">BUILD NGLG-7S-R8</p>
     </form>
   </main>
   <section id="confirmation" class="confirmation" aria-modal="true" role="dialog">
@@ -213,7 +214,57 @@
         "ΠΡΩΗΝ ΒΟΗΘΟΣ ΜΕΓΑΣ ΔΙΔΑΣΚΑΛΟΣ", "ΠΡΩΗΝ ΜΕΓ. ΑΞ .", "ΠΡΩΗΝ ΣΕΒΑΣΜΙΟΣ", "ΑΛΛΟ"
       ]
     };
-    const previewMode = !(window.google && google.script && google.script.run);
+    // ------------------------------------------------------------------
+    // Server connection. The same file works in three places:
+    //  1. Inside Apps Script            → uses google.script.run
+    //  2. Standalone (GitHub Pages)     → calls API_URL in the background,
+    //                                     so it opens on every phone, even
+    //                                     when signed into several Google
+    //                                     accounts
+    //  3. Opened from disk, no API_URL  → preview mode (nothing is saved)
+    //
+    // The background calls use credentials:'omit', so the browser never
+    // sends its Google login cookies. Google therefore treats every call as
+    // anonymous and the multi-account conflict cannot happen. This needs the
+    // Web App to be deployed with access "Anyone" (not "Anyone with Google
+    // account").
+    // ------------------------------------------------------------------
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyB1I6PCc-VAjymDM7wS_f1Qt64mKX_o3aMEWuF2s3c3L7JqGuGU7O7MInQOdjLGt7VJw/exec';
+    const inAppsScript = !!(window.google && google.script && google.script.run);
+    const previewMode = !inAppsScript && !API_URL;
+
+    function unwrap(response) {
+      return response.text().then(text => {
+        let payload;
+        try { payload = JSON.parse(text); }
+        catch (error) {
+          // Google answered with an HTML page (sign-in or error page) instead
+          // of JSON: the deployment is not public or the URL is wrong.
+          throw new Error('Ο διακομιστής δεν απάντησε σωστά. Δοκιμάστε ξανά σε λίγο.');
+        }
+        if (!payload || payload.ok !== true) throw new Error((payload && payload.error) || 'Σφάλμα σύνδεσης με τον διακομιστή.');
+        return payload.result;
+      });
+    }
+    function callServer(action, args) {
+      if (inAppsScript) {
+        const fn = { data:'getSpreadsheetData', mobile:'getMobileMessage', submit:'processForm' }[action];
+        return new Promise((resolve, reject) => {
+          google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fn](...args);
+        });
+      }
+      if (action === 'submit') {
+        return fetch(API_URL, {
+          method:'POST', redirect:'follow', cache:'no-store', credentials:'omit',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'submit', form:args[0] })
+        }).then(unwrap);
+      }
+      const query = new URLSearchParams({ action });
+      if (action === 'mobile') { query.set('mobile', args[0]); query.set('assembly', args[1]); }
+      query.set('_', Date.now());
+      return fetch(API_URL + '?' + query.toString(), { redirect:'follow', cache:'no-store', credentials:'omit' }).then(unwrap);
+    }
     const assemblyConfigs = {
       dec2026: {
         title:'Μεγάλη Συνέλευση 19ης Δεκεμβρίου 2026',
@@ -270,10 +321,20 @@
         ...item,
         number:item.number!==''&&item.number!=null?item.number:(mockData.lodges[index]?mockData.lodges[index].number:'')
       }));
+      if (byId('province').value) filterLodges();
     }
-    if (previewMode) applyData(mockData);
-    else google.script.run.withSuccessHandler(applyData).withFailureHandler(showError).getSpreadsheetData();
+    // If the lodge list cannot be loaded (e.g. a slow mobile network), fall
+    // back to the bundled list so the form can still be filled in.
+    function loadData(attempt) {
+      callServer('data', []).then(applyData).catch(error=>{
+        if (attempt<2) { setTimeout(()=>loadData(attempt+1),1500); return; }
+        applyData(mockData);
+        console.error(error);
+      });
+    }
     const byId=id=>document.getElementById(id);
+    if (previewMode) applyData(mockData);
+    else loadData(0);
     function checkSalutationStyle() { byId('salutation').classList.toggle('gold-salutation',byId('salutation').value==='Σεβασμιότατε'); }
     function updateAssembly() {
       const select=byId('assembly');
@@ -375,8 +436,10 @@
       // where google.script.run and the spreadsheet are unavailable.
       if (previewMode) {
         const key='nglg-mobile-message-shown-v2-'+mobile;
-        if (localStorage.getItem(key)==='1') return;
-        localStorage.setItem(key,'1');
+        try {
+          if (localStorage.getItem(key)==='1') return;
+          localStorage.setItem(key,'1');
+        } catch (error) { /* storage blocked (private mode) */ }
       }
       if (mobilesShownThisSession.has(mobile)) return;
       mobilesShownThisSession.add(mobile);
@@ -408,12 +471,12 @@
           showMobileMessage(fallbackMessage);
         }
       },2000);
-      google.script.run.withSuccessHandler(result=>{
+      callServer('mobile',[mobile,assembly]).then(result=>{
         finished=true; clearTimeout(mobileFallbackTimer);
         if (pendingMobileLookup===lookupKey) pendingMobileLookup='';
         completedMobileLookups.add(lookupKey);
         if (requestSequence===mobileLookupSequence) handleMobileStatus(result,mobile);
-      }).withFailureHandler(error=>{
+      }).catch(error=>{
         finished=true; clearTimeout(mobileFallbackTimer);
         if (pendingMobileLookup===lookupKey) pendingMobileLookup='';
         completedMobileLookups.add(lookupKey);
@@ -421,8 +484,8 @@
           mobilesShownThisSession.add(mobile);
           showMobileMessage(fallbackMessage);
         }
-        showMessage('Ο έλεγχος του κινητού καθυστέρησε. Το μήνυμα εμφανίστηκε από το ασφαλές αντίγραφο.','error');
-      }).getMobileMessage(mobile,assembly);
+        if (fallbackMessage) showMessage('Ο έλεγχος του κινητού καθυστέρησε. Το μήνυμα εμφανίστηκε από το ασφαλές αντίγραφο.','error');
+      });
     }
     function handleSubmissionError(error) {
       byId('submitBtn').disabled=false;
@@ -468,12 +531,12 @@
         setTimeout(()=>{ button.disabled=false; showConfirmation(data); showMessage('Προεπισκόπηση επιτυχής — δεν αποθηκεύτηκαν πραγματικά δεδομένα και δεν στάλθηκε email.','success'); },350);
         return;
       }
-      google.script.run.withSuccessHandler(result=>{ showConfirmation(data); form.reset(); button.disabled=false; updateAssembly(); updateSubmitButton(); updateOfficeList(); filterLodges(); refreshCompletedFields();
+      callServer('submit',[data]).then(result=>{ showConfirmation(data); form.reset(); button.disabled=false; updateAssembly(); updateSubmitButton(); updateOfficeList(); filterLodges(); refreshCompletedFields();
         const emailSent=!result||result.emailSent!==false;
         showMessage(emailSent
           ? 'Η εγγραφή ολοκληρώθηκε επιτυχώς και στάλθηκε email επιβεβαίωσης.'
           : 'Η εγγραφή αποθηκεύτηκε, αλλά το email επιβεβαίωσης δεν στάλθηκε. Παρακαλούμε ενημερώστε τη Διοργάνωση.',emailSent?'success':'error');
-      }).withFailureHandler(handleSubmissionError).processForm(form);
+      }).catch(handleSubmissionError);
     }
     byId('fn').addEventListener('input',updateSubmitButton); byId('ln').addEventListener('input',updateSubmitButton);
     byId('assembly').addEventListener('change',updateAssembly);

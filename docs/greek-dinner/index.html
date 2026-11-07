@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Δήλωση Συμμετοχής στο Δείπνο — ΕΜΣΤΕ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --blue:#061a35; --blue2:#123f78; --royal:#123f78; --gold:#d0aa4f; --gold-light:#f0dda0; --marble:#353a40; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; padding:20px; font-family:Montserrat,sans-serif; color:var(--blue);
+      background:linear-gradient(rgba(1,13,28,.54),rgba(1,13,28,.68)),url('https://raw.githubusercontent.com/dskiad/nglg-registration-forms/main/forms/greek-grand-communication/assets/background.jpg') center/cover fixed;
+      background-color:#001529; }
+    .preview-badge { display:none; position:fixed; top:12px; right:12px; z-index:2; padding:8px 12px; border-radius:999px;
+      background:#fff3cd; color:#6a5000; font-size:12px; font-weight:700; box-shadow:0 3px 15px #0003; }
+    .build-version { margin:16px 0 0; color:#d9c37b; text-align:center; font-size:10px; letter-spacing:.6px; opacity:.75; }
+    .preview-mode .preview-badge { display:block; }
+    .form-container { position:relative; max-width:740px; margin:auto; padding:0 42px 42px; overflow:hidden;
+      background:linear-gradient(125deg,rgba(61,66,72,.97),rgba(35,39,44,.98) 48%,rgba(72,76,81,.97));
+      border:1px solid var(--gold-light); border-radius:20px; box-shadow:0 24px 70px #000a,0 0 0 5px #c7a24b22; }
+    .form-container::after { content:""; position:absolute; inset:0; z-index:0; pointer-events:none; opacity:.18;
+      background:repeating-linear-gradient(117deg,transparent 0 46px,#fff 47px 48px,transparent 49px 94px); }
+    .form-container > * { position:relative; z-index:1; }
+    .form-container::before { content:""; position:absolute; inset:10px; border:1px solid #c7a24b55; border-radius:13px; pointer-events:none; }
+    .hero-zone { margin:0 -42px 28px; padding:28px 32px 25px; color:#fff; text-align:center;
+      background:linear-gradient(135deg,#071e43,#164f91 55%,#082653); border-bottom:2px solid var(--gold); box-shadow:0 8px 24px #0007; }
+    .logo { text-align:center; margin-bottom:16px; }
+    .logo img { width:130px; height:130px; object-fit:cover; border:2px solid var(--gold); border-radius:50%; box-shadow:0 7px 20px #0009; }
+    .title-wrapper { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:10px; }
+    .title-icon { width:24px; height:24px; object-fit:contain; }
+    h1 { margin:0; color:#fff; text-align:center; text-transform:uppercase; font:700 23px "Playfair Display",serif; text-shadow:0 2px 4px #0008; }
+    h2 { margin:9px 0 0; color:var(--gold-light); text-align:center; font:600 16px "Playfair Display",serif; }
+    h3 { margin:7px 0 0; color:#fff; text-align:center; letter-spacing:.4px; font:600 14px "Playfair Display",serif; }
+    .event-line { margin:8px 0 0; color:#fff; font-size:13px; line-height:1.45; }
+    .grand-master-photo { display:block; width:170px; height:215px; margin:17px auto 14px; object-fit:cover; object-position:center 22%;
+      border:2px solid var(--gold); border-radius:12px; box-shadow:0 12px 30px #000a,0 0 0 4px #ffffff16;
+      animation:portraitApproach 7s ease-in-out infinite alternate; transform-origin:center 35%; will-change:transform,box-shadow; }
+    .assembly-picker { width:min(640px,100%); margin:17px auto 11px; padding:14px 16px 16px; border:1px solid #d0aa4f88;
+      border-radius:12px; background:#02152d88; box-shadow:inset 0 0 0 1px #ffffff0d,0 7px 20px #0005; }
+    .assembly-picker label { justify-content:center; margin:0 0 9px; color:var(--gold-light); font-size:12px; }
+    .assembly-picker select { background:#0b1d35; color:#fff; border-color:var(--gold); font-weight:700; color-scheme:dark; }
+    @keyframes portraitApproach {
+      0% { transform:perspective(900px) translateZ(-28px) scale(.965); box-shadow:0 10px 24px #0009,0 0 0 4px #ffffff12; }
+      100% { transform:perspective(900px) translateZ(38px) scale(1.045); box-shadow:0 20px 42px #000c,0 0 0 5px #d0aa4f33; }
+    }
+    @media(prefers-reduced-motion:reduce) { .grand-master-photo { animation:none; } }
+    .website { display:inline-block; margin-top:10px; color:var(--gold-light); font-weight:700; text-decoration:none; }
+    label { display:flex; align-items:center; gap:9px; margin:20px 0 8px; color:#fff; font-size:12px; font-weight:700; letter-spacing:.45px; text-transform:uppercase; }
+    label::before { content:attr(data-icon); display:grid; place-items:center; flex:0 0 27px; width:27px; height:27px; border:1px solid var(--gold);
+      border-radius:50%; background:linear-gradient(145deg,#fffdf6,#f4ead1); color:#9b751e; font-size:13px; box-shadow:0 2px 5px #0001; }
+    input,select { width:100%; padding:14px 15px; border:1.5px solid var(--gold); border-radius:10px; background:#f9f7f1;
+      color:#121c2b; font:15px Montserrat,sans-serif; box-shadow:inset 0 0 0 1px #fff,0 4px 12px #0005; }
+    input:focus,select:focus { outline:none; border-color:#8c6818; box-shadow:0 0 0 3px #c9a22730,0 4px 12px #0001; }
+    input.completed-field,select.completed-field { padding-right:52px; border-color:#e2bd60;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='w' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23b9783f'/%3E%3Cstop offset='.5' stop-color='%237b3f1e'/%3E%3Cstop offset='1' stop-color='%234b230f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='15' fill='%23fff8e8' stroke='%23bd8d2e' stroke-width='1.5'/%3E%3Cg transform='rotate(-38 16 16)' stroke='%23391a0a' stroke-width='1'%3E%3Crect x='14.2' y='12' width='3.6' height='15' rx='1.8' fill='url(%23w)'/%3E%3Crect x='7' y='6.5' width='18' height='8' rx='2' fill='url(%23w)'/%3E%3Crect x='5.5' y='8' width='3' height='5' rx='1' fill='%23562a13'/%3E%3Crect x='23.5' y='8' width='3' height='5' rx='1' fill='%23562a13'/%3E%3Cpath d='M10 8.5h11' stroke='%23d8a06c' stroke-linecap='round' opacity='.75'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 10px center; background-size:32px 32px; }
+    select.completed-field { background-position:right 38px center; }
+    .gold-salutation { color:#a88412!important; font-weight:700!important; }
+    button { width:100%; margin-top:30px; padding:18px; border:1px solid var(--gold-light); border-radius:12px;
+      background:linear-gradient(135deg,var(--blue),var(--blue2)); color:#fff;
+      font-size:17px; font-weight:700; cursor:pointer; text-transform:uppercase; box-shadow:0 5px 14px #00214755; }
+    button:hover { background:#003366; }
+    button:disabled { opacity:.65; cursor:wait; }
+    .message { display:none; margin-top:18px; padding:14px; border-radius:10px; text-align:center; font-weight:600; }
+    .message.success { display:block; background:#e7f6ec; color:#176b35; }
+    .message.error { display:block; background:#fdeaea; color:#9b1c1c; }
+    .confirmation { display:none; position:fixed; inset:0; z-index:20; padding:20px; place-items:center; background:#001226cc; backdrop-filter:blur(7px); }
+    .confirmation.open { display:grid; }
+    .confirmation-card { position:relative; width:min(620px,100%); max-height:90vh; overflow:auto; padding:38px; border:2px solid var(--gold);
+      border-radius:18px; background:linear-gradient(145deg,#fffef9,#f6eedb); color:var(--blue); box-shadow:0 25px 90px #000c,0 0 0 6px #c7a24b25; text-align:center; }
+    .confirmation-card h2 { color:var(--blue); font-size:25px; }
+    .confirmation-card .diamond { color:var(--gold); font-size:28px; }
+    .dinner-only-warning { margin:18px 0; padding:15px 14px; border:2px solid #b12a2a; border-radius:10px;
+      background:#fff0e8; color:#861c1c; font-size:15px; font-weight:800; line-height:1.5; letter-spacing:.25px; }
+    .confirmation-card dl { display:grid; grid-template-columns:42% 58%; margin:24px 0; border:1px solid #c7a24b88; border-radius:10px; overflow:hidden; text-align:left; }
+    .confirmation-card dt,.confirmation-card dd { margin:0; padding:10px 12px; border-bottom:1px solid #c7a24b55; }
+    .confirmation-card dt { background:#c7a24b15; font-weight:700; }
+    .confirmation-card .organisers { margin:22px 0 0; font:700 17px "Playfair Display",serif; }
+    .close-confirmation { width:auto; min-width:180px; margin-top:22px; padding:12px 24px; }
+    .mobile-message { display:none; position:fixed; inset:0; z-index:30; padding:20px; place-items:center; background:#031126cc; backdrop-filter:blur(8px); }
+    .mobile-message.open { display:grid; }
+    .mobile-message-card { width:min(560px,100%); padding:34px 30px; border:2px solid var(--gold); border-radius:17px;
+      background:linear-gradient(145deg,#102f5c,#061a35); color:#fff; box-shadow:0 25px 90px #000d,0 0 0 6px #d0aa4f22; text-align:center; }
+    .mobile-message-symbol { color:var(--gold-light); font-size:34px; animation:hammerPulse 1.5s ease-in-out infinite alternate; }
+    .mobile-message-card h2 { color:var(--gold-light); font-size:22px; }
+    .mobile-message-card p { font-size:17px; line-height:1.65; }
+    .mobile-message-timer { margin-top:16px; color:#d9e3f1; font-size:12px!important; }
+    .email-check { display:none; position:fixed; inset:0; z-index:40; padding:18px; place-items:center; background:#020b18e8; backdrop-filter:blur(9px); }
+    .email-check.open { display:grid; }
+    .email-check-card { width:min(620px,100%); padding:36px 30px; border:2px solid var(--gold); border-radius:18px;
+      background:linear-gradient(145deg,#fffef9,#eee4cc); color:var(--blue); box-shadow:0 28px 100px #000e,0 0 0 6px #d0aa4f2b; text-align:center; }
+    .email-check-card .mail-symbol { color:#ad8425; font-size:38px; }
+    .email-check-card h2 { margin:8px 0 12px; color:var(--blue); font:700 26px "Playfair Display",serif; }
+    .email-check-card .email-question { margin:8px 0 18px; font-size:17px; line-height:1.55; }
+    #confirm-email { padding:17px 16px; border:2px solid var(--gold); background:#fff; color:#071d38; font-size:clamp(18px,4vw,25px);
+      font-weight:700; text-align:center; overflow-wrap:anywhere; }
+    .email-hint { min-height:24px; margin:10px 0 0; color:#a13a22; font-size:14px; font-weight:700; }
+    .email-actions { display:grid; grid-template-columns:1fr 1.5fr; gap:12px; margin-top:20px; }
+    .email-actions button { margin:0; padding:14px 10px; font-size:14px; }
+    .email-actions .secondary { background:#626b75; }
+    @keyframes hammerPulse { from{transform:scale(.92)} to{transform:scale(1.1)} }
+    @media(max-width:600px) {
+      body{padding:6px}.form-container{padding:0 17px 25px;border-radius:12px}.hero-zone{margin:0 -17px 24px;padding:22px 14px}h1{font-size:18px}
+      h2{font-size:14px}h3{font-size:13px}.event-line{font-size:12px}.grand-master-photo{width:145px;height:185px}select{background:#111b2b;color:#fff;border-color:var(--gold);color-scheme:dark}
+      select option{background:#111b2b;color:#fff}.logo img{width:105px;height:105px}.confirmation-card{padding:28px 18px}
+      .email-check{padding:10px}.email-check-card{padding:28px 15px}.email-check-card h2{font-size:21px}.email-question{font-size:15px!important}
+      #confirm-email{font-size:19px;padding:15px 10px}.email-actions{grid-template-columns:1fr}.email-actions button{font-size:13px}
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-badge">ΛΕΙΤΟΥΡΓΙΑ ΠΡΟΕΠΙΣΚΟΠΗΣΗΣ</div>
+  <main class="form-container">
+    <header class="hero-zone">
+      <div class="logo"><img src="https://raw.githubusercontent.com/dskiad/nglg-registration-forms/main/forms/greek-grand-communication/assets/emblem.jpg" alt="Έμβλημα ΕΜΣΤΕ"></div>
+      <div class="title-wrapper">
+        <img src="https://img.icons8.com/color/48/compass.png" class="title-icon" alt="">
+        <h1>ΕΘΝΙΚΗ ΜΕΓΑΛΗ ΣΤΟΑ ΤΗΣ ΕΛΛΑΔΟΣ</h1>
+        <img src="https://img.icons8.com/color/48/compass.png" class="title-icon" alt="">
+      </div>
+      <h2>Σεβτ. Αδ. Ιωάννης Μπενετάτος — Μέγας Διδάσκαλος</h2>
+      <img class="grand-master-photo" src="https://raw.githubusercontent.com/dskiad/nglg-registration-forms/main/forms/greek-grand-communication/assets/grand-master.jpg" alt="Σεβτ. Αδ. Ιωάννης Μπενετάτος — Μέγας Διδάσκαλος">
+      <div class="assembly-picker">
+        <label for="assembly" data-icon="◆">ΕΠΕΛΕΞΕ ΜΕΓΑΛΗ ΣΥΝΕΛΕΥΣΗ</label>
+        <select id="assembly" name="assembly" form="myForm" required>
+          <option value="" selected disabled>-- ΕΠΕΛΕΞΕ ΜΕΓΑΛΗ ΣΥΝΕΛΕΥΣΗ --</option>
+          <option value="dec2026">Μεγάλη Συνέλευση 19ης Δεκεμβρίου 2026</option>
+          <option value="may2027">Μεγάλη Συνέλευση 15ης Μαΐου 2027</option>
+        </select>
+      </div>
+      <p class="event-line">Δήλωση Συμμετοχής στο Δείπνο, ώρα 20:30<br><span id="event-date">Επιλέξτε Μεγάλη Συνέλευση</span></p>
+      <a class="website" href="https://www.nglgreece.org" target="_blank" rel="noopener">www.nglgreece.org</a>
+    </header>
+    <form id="myForm">
+      <label for="fn" data-icon="✦">Όνομα</label><input type="text" id="fn" name="name" required>
+      <label for="ln" data-icon="✧">Επώνυμο</label><input type="text" id="ln" name="surname" required>
+      <label for="salutation" data-icon="🔨">Προσφώνηση</label>
+      <select id="salutation" name="salutation" required>
+        <option value="" selected disabled>-- Επιλέξτε Προσφώνηση --</option>
+        <option>Σεβασμιότατε</option><option>Πανσεβάσμιε</option><option>Λίαν Σεβάσμιε</option><option>Σεβάσμιε</option><option>Αδελφέ</option>
+      </select>
+      <label for="statusType" data-icon="◈">ΑΞΙΩΜΑ ΜΕΓΑΛΟΥ ΑΞΙΩΜΑΤΙΚΟΥ</label>
+      <select id="statusType" name="statusType" required>
+        <option value="">-- Επιλέξτε Κατάσταση --</option><option value="ΕΝ ΕΝΕΡΓΕΙΑ">ΕΝ ΕΝΕΡΓΕΙΑ</option><option value="ΠΡΩΗΝ">ΠΡΩΗΝ</option><option value="ΟΥΔΕΝ">ΟΥΔΕΝ</option>
+      </select>
+      <label for="office" data-icon="⚜">Βαθμός / Αξίωμα</label><select id="office" name="office" required><option value="">-- Πρώτα επιλέξτε κατάσταση --</option></select>
+      <label for="province" data-icon="⌖">Επαρχία - Περιφέρεια</label>
+      <select id="province" name="province" required>
+        <option value="">-- Επιλέξτε Επαρχία --</option><option value="ΑΘΗΝΩΝ">ΑΘΗΝΩΝ</option>
+        <option value="ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ">ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ</option><option value="ΙΟΝΙΩΝ ΝΗΣΩΝ">ΙΟΝΙΩΝ ΝΗΣΩΝ</option>
+        <option value="ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ">ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ</option><option value="ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ">ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ</option>
+        <option value="ΚΥΠΡΟΥ">Περιφέρεια ΚΥΠΡΟΥ</option>
+      </select>
+      <label for="lodge" data-icon="△">Στοά</label><select id="lodge" name="lodge" required><option value="">-- Πρώτα επιλέξτε Επαρχία --</option></select>
+      <label for="partner" data-icon="♙">Αριθμός συνοδών στο δείπνο</label><input id="partner" type="number" name="partner" min="0" value="0" required>
+      <label for="mobile" data-icon="☎">Κινητό τηλέφωνο</label><input id="mobile" type="tel" name="mobile" inputmode="tel" placeholder="6951087654" required>
+      <label for="email" data-icon="✉">Email δηλωμένο στη Στοά σας</label><input id="email" type="email" name="email" placeholder="name@example.com" required>
+      <button type="submit" id="submitBtn">ΕΓΓΡΑΦΗ</button><div id="message" class="message" role="status"></div>
+      <p class="build-version">BUILD NGLG-7S-R8</p>
+    </form>
+  </main>
+  <section id="confirmation" class="confirmation" aria-modal="true" role="dialog">
+    <div class="confirmation-card">
+      <div class="diamond">◆</div><h2>Ευχαριστούμε για τη δήλωση συμμετοχής</h2>
+      <p id="confirmation-greeting"></p>
+      <div class="dinner-only-warning">ΠΡΟΣΟΧΗ: Η ΔΗΛΩΣΗ ΣΥΜΜΕΤΟΧΗΣ ΑΦΟΡΑ ΤΟ ΔΕΙΠΝΟ ΚΑΙ ΟΧΙ ΤΗ ΜΕΓΑΛΗ ΣΥΝΕΛΕΥΣΗ.</div>
+      <dl id="confirmation-details"></dl>
+      <p class="organisers">Για τη Διοργάνωση</p>
+      <p>Ο Μέγας Καγκελάριος<br><b>Πσεβ. Αδ. Δημήτριος Σκιαδόπουλος</b></p>
+      <button type="button" class="close-confirmation" onclick="closeConfirmation()">ΚΛΕΙΣΙΜΟ</button>
+    </div>
+  </section>
+  <section id="mobile-message" class="mobile-message" aria-modal="true" role="dialog">
+    <div class="mobile-message-card">
+      <div class="mobile-message-symbol">🔨</div>
+      <h2 id="mobile-message-title">Προσωπικό μήνυμα</h2>
+      <p id="mobile-message-text"></p>
+      <p class="mobile-message-timer">Το μήνυμα θα κλείσει αυτόματα σε <span id="mobile-message-seconds">7</span> δευτερόλεπτα.</p>
+    </div>
+  </section>
+  <section id="email-check" class="email-check" aria-modal="true" role="dialog" aria-labelledby="email-check-title">
+    <div class="email-check-card">
+      <div class="mail-symbol">✉</div>
+      <h2 id="email-check-title">ΕΙΝΑΙ ΣΩΣΤΟ ΤΟ EMAIL;</h2>
+      <p class="email-question">Η επιβεβαίωση της εγγραφής θα σταλεί στο παρακάτω email.<br>Ελέγξτε το προσεκτικά και διορθώστε το, εάν χρειάζεται.</p>
+      <input id="confirm-email" type="email" inputmode="email" autocomplete="email" aria-label="Επιβεβαίωση email">
+      <p id="email-hint" class="email-hint"></p>
+      <div class="email-actions">
+        <button type="button" class="secondary" onclick="closeEmailCheck()">ΕΠΙΣΤΡΟΦΗ</button>
+        <button type="button" onclick="confirmEmailAndSend()">ΕΠΙΒΕΒΑΙΩΣΗ ΚΑΙ ΑΠΟΣΤΟΛΗ</button>
+      </div>
+    </div>
+  </section>
+  <script>
+    let globalLodges = [];
+    const officeLists = {
+      "ΕΝ ΕΝΕΡΓΕΙΑ": [
+        "Μέγας Διδάσκαλος", "Αναπληρωτής Μέγας Διδάσκαλος", "Βοηθός Μέγας Διδάσκαλος",
+        "Πρώτος Μέγας Επόπτης", "Δεύτερος Μέγας Επόπτης", "Μέγας Ευχέτης", "Πρόεδρος ΣΓΥ",
+        "Μέγας Νομοφύλαξ", "Μέγας Γραμματεύς", "Μέγας Καγκελάριος", "Μέγας Θησαυροφύλαξ",
+        "Μέγας Γραμμ. Εκπ/σεως", "Πρόεδρος Μεγάλου Αγαθοεργού Σώματος", "Μέγας Τελετάρχης",
+        "Μέγας Ξιφοφόρος", "Μέγας Επίτροπος Έργων", "Αναπληρωτής Μέγας Γραμματεύς",
+        "Αναπληρωτής Μέγας Καγκελάριος", "Αναπληρωτής Μέγας Τελετάρχης",
+        "Μέγας Έφορος Μουσείου & Βιβλιοθήκης", "Πρώτος Μέγας Διάκονος", "Δεύτερος Μέγας Διάκονος",
+        "Βοηθός Μέγας Γραμματεύς", "Βοηθός Μέγας Καγκελάριος", "Μέγας Έφορος επί των Διασήμων",
+        "Μέγας Οργανιστής", "Μέγας Σημαιοφόρος", "Μέγας Προσαγωγεύς", "Μέγας Στεγαστής",
+        "Μέγας Επιμελητής", "Επ.ΜΔ. Αθηνών", "Επ.ΜΔ Πειραιώς", "Επ.ΜΔ Ιονίων Νήσων",
+        "Περ.ΜΔ Κύπρου", "Επ.ΜΔ Κεντρικής και Βορείου Ελλάδος",
+        "Επ.ΜΔ Πελοποννήσου και Δυτικής Ελλάδος"
+      ],
+      "ΠΡΩΗΝ": [
+        "ΠΡΩΗΝ ΜΕΓΑΣ ΔΙΔΑΣΚΑΛΟΣ", "ΠΡΩΗΝ ΑΝΑΠΛΗΡΩΤΗΣ ΜΕΓΑΣ ΔΙΔΑΣΚΑΛΟΣ",
+        "ΠΡΩΗΝ ΒΟΗΘΟΣ ΜΕΓΑΣ ΔΙΔΑΣΚΑΛΟΣ", "ΠΡΩΗΝ ΜΕΓ. ΑΞ .", "ΠΡΩΗΝ ΣΕΒΑΣΜΙΟΣ", "ΑΛΛΟ"
+      ]
+    };
+    // ------------------------------------------------------------------
+    // Server connection. The same file works in three places:
+    //  1. Inside Apps Script            → uses google.script.run
+    //  2. Standalone (GitHub Pages)     → calls API_URL in the background,
+    //                                     so it opens on every phone, even
+    //                                     when signed into several Google
+    //                                     accounts
+    //  3. Opened from disk, no API_URL  → preview mode (nothing is saved)
+    //
+    // The background calls use credentials:'omit', so the browser never
+    // sends its Google login cookies. Google therefore treats every call as
+    // anonymous and the multi-account conflict cannot happen. This needs the
+    // Web App to be deployed with access "Anyone" (not "Anyone with Google
+    // account").
+    // ------------------------------------------------------------------
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyB1I6PCc-VAjymDM7wS_f1Qt64mKX_o3aMEWuF2s3c3L7JqGuGU7O7MInQOdjLGt7VJw/exec';
+    const inAppsScript = !!(window.google && google.script && google.script.run);
+    const previewMode = !inAppsScript && !API_URL;
+
+    function unwrap(response) {
+      return response.text().then(text => {
+        let payload;
+        try { payload = JSON.parse(text); }
+        catch (error) {
+          // Google answered with an HTML page (sign-in or error page) instead
+          // of JSON: the deployment is not public or the URL is wrong.
+          throw new Error('Ο διακομιστής δεν απάντησε σωστά. Δοκιμάστε ξανά σε λίγο.');
+        }
+        if (!payload || payload.ok !== true) throw new Error((payload && payload.error) || 'Σφάλμα σύνδεσης με τον διακομιστή.');
+        return payload.result;
+      });
+    }
+    function callServer(action, args) {
+      if (inAppsScript) {
+        const fn = { data:'getSpreadsheetData', mobile:'getMobileMessage', submit:'processForm' }[action];
+        return new Promise((resolve, reject) => {
+          google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fn](...args);
+        });
+      }
+      if (action === 'submit') {
+        return fetch(API_URL, {
+          method:'POST', redirect:'follow', cache:'no-store', credentials:'omit',
+          headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+          body:JSON.stringify({ action:'submit', form:args[0] })
+        }).then(unwrap);
+      }
+      const query = new URLSearchParams({ action });
+      if (action === 'mobile') { query.set('mobile', args[0]); query.set('assembly', args[1]); }
+      query.set('_', Date.now());
+      return fetch(API_URL + '?' + query.toString(), { redirect:'follow', cache:'no-store', credentials:'omit' }).then(unwrap);
+    }
+    const assemblyConfigs = {
+      dec2026: {
+        title:'Μεγάλη Συνέλευση 19ης Δεκεμβρίου 2026',
+        dateLine:'Σάββατο 19 Δεκεμβρίου 2026'
+      },
+      may2027: {
+        title:'Μεγάλη Συνέλευση 15ης Μαΐου 2027',
+        dateLine:'Σάββατο 15η Μαΐου 2027'
+      }
+    };
+    const previewMobileMessages = {
+      '6900000000':'Αυτό είναι ένα δοκιμαστικό προσωπικό μήνυμα της προεπισκόπησης.'
+    };
+    const previewRegisteredMobiles = new Set([]);
+    const mockData = {
+      titles:[["ΕΘΝΙΚΗ ΜΕΓΑΛΗ ΣΤΟΑ ΤΗΣ ΕΛΛΑΔΟΣ","ΦΟΡΜΑ ΕΓΓΡΑΦΗΣ","ΜΕΓΑΛΗ ΣΥΝΕΛΕΥΣΗ"]],
+      lodges:[
+        ['ΠΑΛΑΙΩΝ ΠΑΤΡΩΝ ΓΕΡΜΑΝΟΣ','ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ'],['ΑΚΡΟΠΟΛΙΣ','ΑΘΗΝΩΝ'],['ΠΑΡΘΕΝΩΝ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],
+        ['ΜΙΑΟΥΛΗΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΠΙΣΤΙΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΟΜΟΝΟΙΑ ΣΤΟΑ ΜΕΓΑΛΟΥ ΔΙΔΑΣΚΑΛΟΥ','ΑΘΗΝΩΝ'],
+        ['ΗΛΙΟΤΡΟΠΙΟΝ','ΑΘΗΝΩΝ'],['ΙΣΙΣ','ΑΘΗΝΩΝ'],['ΗΡΑΚΛΕΙΤΟΣ','ΑΘΗΝΩΝ'],['ΑΘΗΝΑ ΣΟΦΙΑ','ΑΘΗΝΩΝ'],
+        ['ΗΡΑΚΛΗΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['GARIBALDI','ΑΘΗΝΩΝ'],['ΕΜΠΕΔΟΚΛΗΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],
+        ['ΕΝΩΣΙΣ ΛΕΥΚΑΔΟΣ','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['ΑΝΑΓΕΝΝΗΣΙΣ','ΑΘΗΝΩΝ'],['ΕΓΚΑΤΕΣΤΗΜΕΝΩΝ ΣΕΒΑΣΜΙΩΝ','ΑΘΗΝΩΝ'],
+        ['ΤΡΙΠΤΟΛΕΜΟΣ','ΑΘΗΝΩΝ'],['ΑΤΤΙΚΟΣ ΑΣΤΗΡ','ΑΘΗΝΩΝ'],['ΠΥΘΑΓΟΡΑΣ','ΑΘΗΝΩΝ'],['ΦΙΛΙΚΗ ΕΤΑΙΡΕΙΑ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],
+        ['ΜΕΓΑΣ ΑΛΕΞΑΝΔΡΟΣ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ'],['ΚΑΜΕΙΡΟΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],
+        ['ΚΑΣΣΑΝΔΡΟΣ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ'],['ΘΕΣΣΑΛΟΝΙΚΗ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ'],
+        ['ΣΩΚΡΑΤΗΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΔΙΩΝΗ','ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ'],['ΠΟΣΕΙΔΩΝΙΑ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],
+        ['ΔΕΙΝΟΚΡΑΤΗΣ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ'],['ΙΠΠΟΚΡΑΤΗΣ','ΑΘΗΝΩΝ'],['ΑΔΑΜΑΝΤΙΟΣ ΚΟΡΑΗΣ','ΑΘΗΝΩΝ'],
+        ['ΒΥΖΑΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΑΡΗΤΗ','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['ΔΑΙΔΑΛΟΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['SAINT GEORGE','ΑΘΗΝΩΝ'],
+        ['BENEFICENZA','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['ΑΡΓΩ','ΑΘΗΝΩΝ'],['ΕΝΩΣΙΣ(ΚΥΠΡΟΣ)','ΚΥΠΡΟΥ'],['LA FRANCE','ΑΘΗΝΩΝ'],
+        ['ΟΜΗΡΟΣ','ΑΘΗΝΩΝ'],['ΔΗΜΗΤΡΑ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ'],['ΑΝΤΩΝΙΟΣ ΜΠΕΝΑΚΗΣ','ΙΟΝΙΩΝ ΝΗΣΩΝ'],
+        ['ΠΛΟΥΤΑΡΧΟΣ','ΑΘΗΝΩΝ'],['ΦΙΛΕΛΛΗΝΩΝ','ΚΥΠΡΟΥ'],['ΠΥΘΑΓΟΡΑΣ','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['ΕΛΛΗΝΟΓΛΩΣΣΟΝ ΞΕΝΟΔΟΧΕΙΟΝ','ΑΘΗΝΩΝ'],
+        ['ΑΝΤΙΠΛΟΙΑΡΧΟΣ ΒΛΑΧΑΚΟΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΠΛΑΤΩΝ','ΑΘΗΝΩΝ'],['ΛΗΔΡΑ','ΚΥΠΡΟΥ'],
+        ['ΜΕΓΑΛΩΝ ΕΠΙΜΕΛΗΤΩΝ','ΑΘΗΝΩΝ'],['ΛΟΡΔΟΣ ΒΥΡΩΝ','ΑΘΗΝΩΝ'],['ΑΘΗΝΑ ΣΤΑΘΜΙΑ','ΑΘΗΝΩΝ'],
+        ['ΑΠΟΛΛΩΝΙΟΣ Ο ΡΟΔΙΟΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΚΥΠΡΑΙΩΝ ΗΡΩΩΝ','ΚΥΠΡΟΥ'],['RUDYARD KIPLING','ΙΟΝΙΩΝ ΝΗΣΩΝ'],
+        ['FRATELLI BANDIERA','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['ΑΓΙΟΥ ΙΩΑΝΝΟΥ','ΑΘΗΝΩΝ'],['ΛΟΓΟΣ','ΑΘΗΝΩΝ'],['ΑΘΑΝΑΣΙΟΣ ΛΕΥΚΑΔΙΤΗΣ','ΑΘΗΝΩΝ'],
+        ['ΕΛΛΗΝΩΝ ΗΡΩΩΝ','ΑΘΗΝΩΝ'],['ΙΩΑΝΝΗΣ ΚΑΠΟΔΙΣΤΡΙΑΣ','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['ΦΙΛΟΓΕΝΕΙΑ','ΙΟΝΙΩΝ ΝΗΣΩΝ'],
+        ['ΔΙΟΝΥΣΙΟΣ ΡΩΜΑΣ','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['LA ΡAIX','ΙΟΝΙΩΝ ΝΗΣΩΝ'],['ΘΕΜΙΣΤΟΚΛΗΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],
+        ['ΙΣΟΤΗΣ 1882','ΑΘΗΝΩΝ'],['ΔΩΔΩΝΗ','ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ'],['ΚΑΘΗΚΟΝ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΑΚΑΚΙΑ','ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ'],
+        ['ΑΛΕΞΑΝΔΡΟΣ ΡΩΜΑΣ','ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ'],['ΦΕΡΔΙΝΑΝΔΟΣ ΦΟΝ ΜΠΡΑΟΥΝΣΒΑΪΚ','ΑΘΗΝΩΝ'],
+        ['ΠΛΑΤΩΝ','ΑΘΗΝΩΝ'],['ΑΚΡΟΠΟΛΙΣ','ΑΘΗΝΩΝ'],['ΠΡΟΜΗΘΕΥΣ','ΑΘΗΝΩΝ'],
+        ['ΜΑΚΕΔΩΝ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ'],['ΑΤΛΑΝΤΙΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΕΥΡΩΠΗ','ΑΘΗΝΩΝ'],
+        ['ΑΡΙΣΤΟΜΕΝΗΣ','ΔΥΤΙΚΗΣ ΕΛΛΑΔΟΣ'],['ΜΥΚΟΝΟΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΣΠΥΡΙΔΩΝ ΝΑΓΟΣ','ΑΘΗΝΩΝ'],
+        ['ΗΦΑΙΣΤΙΑ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΔΗΜΗΤΗΡ 123','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],['ΓΕΩΡΓΙΟΣ ΣΟΥΡΗΣ','ΠΕΙΡΑΙΩΣ & ΑΙΓΑΙΟΥ'],
+        ['ΟΡΦΕΥΣ','ΚΕΝΤΡΙΚΗΣ & ΒΟΡΕΙΟΥ ΕΛΛΑΔΟΣ'],['ΕΥΣΤΑΘΙΟΣ ΛΙΑΚΟΠΟΥΛΟΣ','ΑΘΗΝΩΝ'],['ΣΠΥΡΟΣ ΣΑΜΑΡΑΣ','ΑΘΗΝΩΝ'],
+        ['ΦΟΙΝΙΞ ΚΕΡΚΥΡΑΣ','ΙΟΝΙΩΝ ΝΗΣΩΝ']
+      ].map((item,index)=>({
+        lodge:item[0], province:item[1],
+        number:[1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,21,23,24,26,28,29,30,31,32,33,36,39,42,44,48,50,52,53,54,55,58,59,60,61,62,64,66,67,69,70,71,74,76,78,80,84,85,86,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,''][index]
+      }))
+    };
+    if (previewMode) document.body.classList.add('preview-mode');
+    function applyData(data) {
+      globalLodges=(data.lodges||[]).map((item,index)=>({
+        ...item,
+        number:item.number!==''&&item.number!=null?item.number:(mockData.lodges[index]?mockData.lodges[index].number:'')
+      }));
+      if (byId('province').value) filterLodges();
+    }
+    // If the lodge list cannot be loaded (e.g. a slow mobile network), fall
+    // back to the bundled list so the form can still be filled in.
+    function loadData(attempt) {
+      callServer('data', []).then(applyData).catch(error=>{
+        if (attempt<2) { setTimeout(()=>loadData(attempt+1),1500); return; }
+        applyData(mockData);
+        console.error(error);
+      });
+    }
+    const byId=id=>document.getElementById(id);
+    if (previewMode) applyData(mockData);
+    else loadData(0);
+    function checkSalutationStyle() { byId('salutation').classList.toggle('gold-salutation',byId('salutation').value==='Σεβασμιότατε'); }
+    function updateAssembly() {
+      const select=byId('assembly');
+      const config=assemblyConfigs[select.value];
+      byId('event-date').textContent=config?config.dateLine:'Επιλέξτε Μεγάλη Συνέλευση';
+      markCompleted(select);
+      pendingMobileLookup='';
+      mobileLookupSequence+=1;
+      clearTimeout(mobileFallbackTimer);
+      if (/^69\d{8}$/.test(normalizeMobile(byId('mobile').value))&&select.value) checkMobileMessage();
+    }
+    function markCompleted(element) {
+      const complete=element.value!==''&&element.checkValidity();
+      element.classList.toggle('completed-field',complete);
+    }
+    function refreshCompletedFields() { document.querySelectorAll('#myForm input,#myForm select,[form="myForm"]').forEach(markCompleted); }
+    function updateSubmitButton() {
+      const name=[byId('salutation').value,byId('fn').value,byId('ln').value].filter(Boolean).join(' ');
+      byId('submitBtn').textContent=(byId('fn').value||byId('ln').value)?'ΕΓΓΡΑΦΗ '+name:'ΕΓΓΡΑΦΗ';
+    }
+    function updateOfficeList() {
+      const select=byId('office'); select.innerHTML='<option value="">-- Επιλέξτε Αξίωμα --</option>';
+      if (byId('statusType').value==='ΟΥΔΕΝ') {
+        select.innerHTML='<option value="ΟΥΔΕΝ" selected>ΟΥΔΕΝ</option>';
+        markCompleted(select);
+        return;
+      }
+      (officeLists[byId('statusType').value]||[]).forEach(item=>select.add(new Option(item,item)));
+      markCompleted(select);
+    }
+    function filterLodges() {
+      const select=byId('lodge'); select.innerHTML='<option value="">-- Επιλέξτε Στοά --</option>';
+      const matches=globalLodges.filter(item=>String(item.province||'').trim().toLocaleLowerCase('el')===byId('province').value.trim().toLocaleLowerCase('el'));
+      if (!matches.length) select.add(new Option('-- Δεν βρέθηκαν Στοές για αυτή την Επαρχία --',''));
+      else matches.forEach(item=>{
+        const display=item.lodge==='ΦΟΙΝΙΞ ΚΕΡΚΥΡΑΣ'
+          ? 'ΦΟΙΝΙΞ ΚΕΡΚΥΡΑΣ έτος Ιδρ. 1818'
+          : item.lodge+(item.number!==''&&item.number!=null?' υπ’ αριθμ. '+item.number:'');
+        select.add(new Option(display,display));
+      });
+    }
+    function showMessage(text,type) { const box=byId('message'); box.textContent=text; box.className='message '+type; }
+    function showConfirmation(data) {
+      byId('confirmation-greeting').textContent='Αγαπητέ '+data.salutation+' '+data.name+' '+data.surname+',';
+      const assembly=assemblyConfigs[data.assembly]||{title:data.assembly||''};
+      const rows=[['Μεγάλη Συνέλευση',assembly.title],['Αξίωμα',data.statusType+' — '+data.office],['Επαρχία',data.province],['Στοά',data.lodge],
+        ['Συνοδοί στο δείπνο',data.partner],['Κινητό',data.mobile],['Email',data.email]];
+      byId('confirmation-details').innerHTML=rows.map(row=>'<dt>'+escapeHtml(row[0])+'</dt><dd>'+escapeHtml(row[1])+'</dd>').join('');
+      byId('confirmation').classList.add('open');
+    }
+    function closeConfirmation() { byId('confirmation').classList.remove('open'); }
+    function escapeHtml(value) { const div=document.createElement('div'); div.textContent=String(value||''); return div.innerHTML; }
+    function showError(error) { byId('submitBtn').disabled=false; showMessage('Παρουσιάστηκε σφάλμα: '+(error.message||error),'error'); }
+    let mobileLookupTimer=null;
+    let mobileCloseTimer=null;
+    let mobileCountdownTimer=null;
+    let mobileFallbackTimer=null;
+    let pendingMobileLookup='';
+    let mobileLookupSequence=0;
+    const mobilesShownThisSession=new Set();
+    const completedMobileLookups=new Set();
+    function normalizeMobile(value) { return String(value||'').replace(/\D/g,'').replace(/^30(?=69\d{8}$)/,''); }
+    function showMobileMessage(message,title='Προσωπικό μήνυμα',symbol='🔨') {
+      if (message&&typeof message==='object') message=message.message||message.text||'';
+      message=String(message||'').trim();
+      if (!message) return;
+      clearTimeout(mobileCloseTimer); clearInterval(mobileCountdownTimer);
+      byId('mobile-message-title').textContent=title;
+      document.querySelector('.mobile-message-symbol').textContent=symbol;
+      byId('mobile-message-text').textContent=message;
+      byId('mobile-message-seconds').textContent='7';
+      byId('mobile-message').classList.add('open');
+      let remaining=7;
+      mobileCountdownTimer=setInterval(()=>{ remaining-=1; byId('mobile-message-seconds').textContent=String(Math.max(remaining,0)); },1000);
+      mobileCloseTimer=setTimeout(()=>{ byId('mobile-message').classList.remove('open'); clearInterval(mobileCountdownTimer); },7000);
+    }
+    function showDuplicateMobile() {
+      showMobileMessage('Δεν μπορεί να γίνει διπλή εγγραφή με το ίδιο κινητό. Παρακαλούμε χρησιμοποιήστε διαφορετικό αριθμό τηλεφώνου.','ΥΠΑΡΧΟΥΣΑ ΕΓΓΡΑΦΗ','⚠');
+      byId('mobile').value=''; markCompleted(byId('mobile'));
+      setTimeout(()=>byId('mobile').focus(),250);
+    }
+    function handleMobileStatus(result,mobile) {
+      let payload=result;
+      for (let attempt=0;attempt<3&&typeof payload==='string';attempt+=1) {
+        const value=payload.trim();
+        if (!value||value==='[object Object]'||value==='[object object]') {
+          payload={registered:false,message:previewMobileMessages[mobile]||''}; break;
+        }
+        try { payload=JSON.parse(value); }
+        catch (error) { payload={registered:false,message:value}; break; }
+      }
+      if (payload&&payload.registered) { showDuplicateMobile(); return; }
+      let message=(payload&&payload.message)||'';
+      if (message&&typeof message==='object') message=message.message||message.text||'';
+      if (String(message).trim()==='[object Object]') message=previewMobileMessages[mobile]||'';
+      if (!message) return;
+      // The published app uses column D of the "cover " sheet as the single
+      // source of truth. localStorage is used only by the offline preview,
+      // where google.script.run and the spreadsheet are unavailable.
+      if (previewMode) {
+        const key='nglg-mobile-message-shown-v2-'+mobile;
+        try {
+          if (localStorage.getItem(key)==='1') return;
+          localStorage.setItem(key,'1');
+        } catch (error) { /* storage blocked (private mode) */ }
+      }
+      if (mobilesShownThisSession.has(mobile)) return;
+      mobilesShownThisSession.add(mobile);
+      showMobileMessage(String(message));
+    }
+    function checkMobileMessage() {
+      const mobile=normalizeMobile(byId('mobile').value);
+      const assembly=byId('assembly').value;
+      if (!/^69\d{8}$/.test(mobile)) return;
+      if (!assembly) return;
+      const lookupKey=assembly+'|'+mobile;
+      if (pendingMobileLookup===lookupKey||completedMobileLookups.has(lookupKey)) return;
+      if (previewMode) {
+        completedMobileLookups.add(lookupKey);
+        handleMobileStatus({registered:previewRegisteredMobiles.has(mobile),message:previewMobileMessages[mobile]||''},mobile);
+        return;
+      }
+      clearTimeout(mobileFallbackTimer);
+      pendingMobileLookup=lookupKey;
+      const requestSequence=++mobileLookupSequence;
+      let finished=false;
+      const fallbackMessage=previewMobileMessages[mobile]||'';
+      // On slow mobile connections, show the bundled fallback only when the
+      // server has not replied. A normal empty server reply still means that
+      // column D says the message has already been shown.
+      mobileFallbackTimer=setTimeout(()=>{
+        if (!finished&&requestSequence===mobileLookupSequence&&fallbackMessage&&!mobilesShownThisSession.has(mobile)) {
+          mobilesShownThisSession.add(mobile);
+          showMobileMessage(fallbackMessage);
+        }
+      },2000);
+      callServer('mobile',[mobile,assembly]).then(result=>{
+        finished=true; clearTimeout(mobileFallbackTimer);
+        if (pendingMobileLookup===lookupKey) pendingMobileLookup='';
+        completedMobileLookups.add(lookupKey);
+        if (requestSequence===mobileLookupSequence) handleMobileStatus(result,mobile);
+      }).catch(error=>{
+        finished=true; clearTimeout(mobileFallbackTimer);
+        if (pendingMobileLookup===lookupKey) pendingMobileLookup='';
+        completedMobileLookups.add(lookupKey);
+        if (requestSequence===mobileLookupSequence&&fallbackMessage&&!mobilesShownThisSession.has(mobile)) {
+          mobilesShownThisSession.add(mobile);
+          showMobileMessage(fallbackMessage);
+        }
+        if (fallbackMessage) showMessage('Ο έλεγχος του κινητού καθυστέρησε. Το μήνυμα εμφανίστηκε από το ασφαλές αντίγραφο.','error');
+      });
+    }
+    function handleSubmissionError(error) {
+      byId('submitBtn').disabled=false;
+      const message=String((error&&error.message)||error||'');
+      if (message.includes('DUPLICATE_MOBILE')) { showDuplicateMobile(); return; }
+      if (message.includes('INVALID_MOBILE')) { showMobileMessage('Παρακαλούμε εισαγάγετε έγκυρο ελληνικό κινητό τηλέφωνο.','ΜΗ ΕΓΚΥΡΟ ΚΙΝΗΤΟ','⚠'); return; }
+      showError(error);
+    }
+    function commonEmailSuggestion(email) {
+      const fixes={'gmal.com':'gmail.com','gmial.com':'gmail.com','gmai.com':'gmail.com','gmail.con':'gmail.com','hotmal.com':'hotmail.com','outlok.com':'outlook.com'};
+      const parts=String(email||'').trim().toLowerCase().split('@');
+      return parts.length===2&&fixes[parts[1]]?parts[0]+'@'+fixes[parts[1]]:'';
+    }
+    function updateEmailHint() {
+      const suggestion=commonEmailSuggestion(byId('confirm-email').value);
+      byId('email-hint').textContent=suggestion?'Προσοχή: μήπως εννοείτε '+suggestion+';':'';
+    }
+    function openEmailCheck() {
+      const input=byId('confirm-email');
+      input.value=byId('email').value.trim();
+      updateEmailHint();
+      byId('email-check').classList.add('open');
+      setTimeout(()=>{ input.focus(); input.select(); },100);
+    }
+    function closeEmailCheck() { byId('email-check').classList.remove('open'); byId('submitBtn').disabled=false; }
+    function confirmEmailAndSend() {
+      const input=byId('confirm-email');
+      if (!input.checkValidity()||!input.value.trim()) { input.reportValidity(); return; }
+      byId('email').value=input.value.trim();
+      markCompleted(byId('email'));
+      byId('email-check').classList.remove('open');
+      sendForm();
+    }
+    function submitForm(event) {
+      event.preventDefault();
+      if (!byId('myForm').checkValidity()) { byId('myForm').reportValidity(); return; }
+      openEmailCheck();
+    }
+    function sendForm() {
+      const form=byId('myForm'); const button=byId('submitBtn'); button.disabled=true;
+      const data=Object.fromEntries(new FormData(form).entries());
+      if (previewMode) {
+        setTimeout(()=>{ button.disabled=false; showConfirmation(data); showMessage('Προεπισκόπηση επιτυχής — δεν αποθηκεύτηκαν πραγματικά δεδομένα και δεν στάλθηκε email.','success'); },350);
+        return;
+      }
+      callServer('submit',[data]).then(result=>{ showConfirmation(data); form.reset(); button.disabled=false; updateAssembly(); updateSubmitButton(); updateOfficeList(); filterLodges(); refreshCompletedFields();
+        const emailSent=!result||result.emailSent!==false;
+        showMessage(emailSent
+          ? 'Η εγγραφή ολοκληρώθηκε επιτυχώς και στάλθηκε email επιβεβαίωσης.'
+          : 'Η εγγραφή αποθηκεύτηκε, αλλά το email επιβεβαίωσης δεν στάλθηκε. Παρακαλούμε ενημερώστε τη Διοργάνωση.',emailSent?'success':'error');
+      }).catch(handleSubmissionError);
+    }
+    byId('fn').addEventListener('input',updateSubmitButton); byId('ln').addEventListener('input',updateSubmitButton);
+    byId('assembly').addEventListener('change',updateAssembly);
+    byId('salutation').addEventListener('change',()=>{updateSubmitButton();checkSalutationStyle();});
+    byId('statusType').addEventListener('change',updateOfficeList); byId('province').addEventListener('change',filterLodges);
+    document.querySelectorAll('#myForm input,#myForm select,[form="myForm"]').forEach(element=>{
+      element.addEventListener('input',()=>markCompleted(element));
+      element.addEventListener('change',()=>markCompleted(element));
+      element.addEventListener('blur',()=>markCompleted(element));
+    });
+    byId('mobile').addEventListener('input',()=>{
+      clearTimeout(mobileLookupTimer);
+      const mobile=normalizeMobile(byId('mobile').value);
+      if (!/^69\d{8}$/.test(mobile)) {
+        pendingMobileLookup=''; mobileLookupSequence+=1; clearTimeout(mobileFallbackTimer);
+      } else mobileLookupTimer=setTimeout(checkMobileMessage,500);
+    });
+    byId('mobile').addEventListener('blur',checkMobileMessage);
+    byId('confirm-email').addEventListener('input',updateEmailHint);
+    byId('myForm').addEventListener('submit',submitForm); updateAssembly(); checkSalutationStyle();
+  </script>
+</body>
+</html>

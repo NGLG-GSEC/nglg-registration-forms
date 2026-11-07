@@ -44,10 +44,56 @@ const PROVINCES = [
   'ΚΥΠΡΟΥ'
 ];
 
-function doGet() {
+// ---------------------------------------------------------------------------
+// Web entry points
+// - Without ?action=…  → serves the form page (works on PC, as before).
+// - With ?action=…     → JSON interface used by the standalone form page
+//                        (GitHub Pages). That page opens on every phone,
+//                        whatever Google accounts the browser is signed into.
+//
+// IMPORTANT: deploy with "Execute as: Me" and "Who has access: Anyone"
+// (NOT "Anyone with Google account"), otherwise the JSON calls from the
+// standalone page are redirected to a Google sign-in page and fail.
+// ---------------------------------------------------------------------------
+function doGet(e) {
+  const params = (e && e.parameter) || {};
+  if (params.action) {
+    return jsonResponse_(() => {
+      switch (params.action) {
+        case 'ping': return { ok: true, time: new Date().toISOString() };
+        case 'data': return getSpreadsheetData();
+        case 'mobile': return getMobileMessage(params.mobile, params.assembly);
+        default: throw new Error('Άγνωστη ενέργεια: ' + params.action);
+      }
+    });
+  }
   return HtmlService.createHtmlOutputFromFile('Index')
     .setTitle('Δήλωση Συμμετοχής στο Δείπνο — ΕΜΣΤΕ')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=1');
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+function doPost(e) {
+  return jsonResponse_(() => {
+    const body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    if (body.action !== 'submit') throw new Error('Άγνωστη ενέργεια.');
+    return processForm(body.form || {});
+  });
+}
+
+function jsonResponse_(handler) {
+  let payload;
+  try {
+    payload = { ok: true, result: handler() };
+  } catch (error) {
+    payload = { ok: false, error: String(error && error.message ? error.message : error) };
+  }
+  return ContentService.createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function ping() {
+  return 'OK ' + new Date().toISOString();
 }
 
 function getSpreadsheetData() {
@@ -205,13 +251,13 @@ function sendConfirmationEmail_(data) {
     '<div style="margin:18px 0;padding:14px;border:2px solid #a32626;background:#fff0e8;color:#861c1c;font-weight:bold">' +
     'ΠΡΟΣΟΧΗ: Η ΔΗΛΩΣΗ ΣΥΜΜΕΤΟΧΗΣ ΑΦΟΡΑ ΤΟ ΔΕΙΠΝΟ ΚΑΙ ΟΧΙ ΤΗ ΜΕΓΑΛΗ ΣΥΝΕΛΕΥΣΗ.</div>' +
     '<table style="width:100%;border-collapse:collapse">' + tableRows + '</table>' +
-    '<p style="margin-top:25px">Για τη Διοργάνωση<br>Ο Μέγας Καγκελάριος<br><strong>Πσεβ. Αδ. Δημήτριος Σκιαδόπουλος</strong></p>' +
+    '<p style="margin-top:25px">Για τη Διοργάνωση<br>Ο Μέγας Γραμματεύς<br><strong>Πσεβ. Αδ. Δημήτριος Σκιαδόπουλος</strong></p>' +
     '</div></div>';
 
   const plain = 'Αγαπητέ ' + data.salutation + ' ' + data.name + ' ' + data.surname + ',\n\n' +
     'Η εγγραφή σας καταχωρίστηκε επιτυχώς για ' + event.dinner + '.\n\n' +
     'ΠΡΟΣΟΧΗ: Η ΔΗΛΩΣΗ ΣΥΜΜΕΤΟΧΗΣ ΑΦΟΡΑ ΤΟ ΔΕΙΠΝΟ ΚΑΙ ΟΧΙ ΤΗ ΜΕΓΑΛΗ ΣΥΝΕΛΕΥΣΗ.\n\n' +
-    'Για τη Διοργάνωση\nΟ Μέγας Καγκελάριος\nΠσεβ. Αδ. Δημήτριος Σκιαδόπουλος';
+    'Για τη Διοργάνωση\nΟ Μέγας Γραμματεύς\nΠσεβ. Αδ. Δημήτριος Σκιαδόπουλος';
 
   MailApp.sendEmail({ to: data.email, subject: subject, body: plain, htmlBody: html, name: 'Εθνική Μεγάλη Στοά της Ελλάδος' });
 }
@@ -315,7 +361,7 @@ function requiredHeaderIndex_(map, candidates) {
 
 function normalizeHeader_(value) {
   return String(value || '').trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    .normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
 function normalizeMobile_(value) {
